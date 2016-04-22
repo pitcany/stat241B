@@ -3,9 +3,9 @@ function [historic_stat] = calc_form(team,data,n)
 %split by if team was at home or away
 
 is_team_playing = cellfun(@(x) strcmp(x,team),[data.AwayTeam data.HomeTeam]);
-matchresult = is_team_playing(:,1)+is_team_playing(:,2);
 Team_At_Away = is_team_playing(:,1);
 Team_At_Home = is_team_playing(:,2);
+is_team_playing = Team_At_Away + Team_At_Home;
 
 homewin = strcmp(data(:,'FTR').FTR,'H');
 awaywin = strcmp(data(:,'FTR').FTR,'A') * -1;
@@ -23,29 +23,39 @@ shots_by_team = shots_TeamAtHome + shots_TeamAtAway;
 %initialize our historical data
 num_matches = height(data);
 
-form_Home = zeros([num_matches,1]);
-form_Away = zeros([num_matches,1]);
-total_goals_Home = zeros([num_matches,1]);
-total_goals_Away = zeros([num_matches,1]);
-total_shots_Home = zeros([num_matches,1]);
-total_shots_Away = zeros([num_matches,1]);
+form_Home = zeros(num_matches,1);
+form_Away = zeros(num_matches,1);
+total_goals_Home = zeros(num_matches,1);
+total_goals_Away = zeros(num_matches,1);
+total_shots_Home = zeros(num_matches,1);
+total_shots_Away = zeros(num_matches,1);
+is_lookback_game_in_season = zeros(num_matches,1);
 
-rows_for_team=find(matchresult);
+rows_for_team=find(is_team_playing);
 for i=(n+1):length(rows_for_team)
     rows_to_combine = rows_for_team((i-n):(i-1));
     cur_row=rows_for_team(i);
-    if (ismember(data(cur_row,'HomeTeam').HomeTeam,team) == 1)
+    %check if we are still looking back in the same season
+    %cur_row and lookback_row are row indices
+    lookback_row = rows_for_team(i-n);
+    if (data(cur_row,'Season').Season == data(lookback_row,'Season').Season)
+        is_lookback_game_in_season(cur_row) = 1;
+    
+        if (ismember(data(cur_row,'HomeTeam').HomeTeam,team) == 1)
         form_Home(cur_row)=sum(result_by_team(rows_to_combine));
         total_goals_Home(cur_row)=sum(goals_by_team(rows_to_combine));
         total_shots_Home(cur_row)=sum(shots_by_team(rows_to_combine));
-    else
+        else
         form_Away(cur_row)=sum(result_by_team(rows_to_combine));
         total_goals_Away(cur_row)=sum(goals_by_team(rows_to_combine));
         total_shots_Away(cur_row)=sum(shots_by_team(rows_to_combine));
+        end
+        
     end
+    
 end
 
-historic_stat = [form_Home form_Away total_goals_Home total_goals_Away total_shots_Home total_shots_Away];
+historic_stat = [form_Home form_Away total_goals_Home total_goals_Away total_shots_Home total_shots_Away is_lookback_game_in_season];
 
 %now calculate the total goals scored, goals against, shots, corners, fouls
 %for the home team

@@ -17,3 +17,11 @@ train_feature_table.total_shots_Away = historical_data(:,6);
 train_feature_table.B365H = train(:,'B365H').B365H;
 train_feature_table.B365D = train(:,'B365D').B365D;
 train_feature_table.B365A = train(:,'B365A').B365A;
+train_feature_table.lookback = historical_data(:,7);
+
+%filter rows that don't have enough prior historical data aka lookback is 2
+%home and away teams have a lookback value of 1 so the sum is 2. that's
+%why.
+
+rows_needed=train_feature_table(:,'lookback').lookback == 2;
+train_feature_table = train_feature_table(rows_needed,1:(end-1));
