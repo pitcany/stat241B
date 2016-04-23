@@ -1,4 +1,4 @@
-all_teams_historical_test=arrayfun(@(x) calc_form(x,test,7), teams, 'UniformOutput', false);
+all_teams_historical_test=arrayfun(@(x) combine_stat(x,test,7), teams, 'UniformOutput', false);
 catTeams = cat(3,all_teams_historical_test{:});
 historical_data_test=sum(catTeams,3);
 

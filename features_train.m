@@ -2,7 +2,7 @@
 %replace train with test everywhere
 
 teams={'Ascoli','Atalanta','Bari','Bologna','Brescia','Cagliari','Catania','Cesena','Chievo','Empoli','Fiorentina','Genoa','Inter','Juventus','Lazio','Lecce','Livorno','Messina','Milan','Napoli','Novara','Palermo','Parma','Pescara','Reggina','Roma','Sampdoria','Sassuolo','Siena','Torino','Udinese','Verona'};
-all_teams_historical_train=arrayfun(@(x) calc_form(x,train,7), teams, 'UniformOutput', false);
+all_teams_historical_train=arrayfun(@(x) combine_stat(x,train,7), teams, 'UniformOutput', false);
 catTeams = cat(3,all_teams_historical_train{:});
 historical_data_train=sum(catTeams,3);
 
