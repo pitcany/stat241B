@@ -31,3 +31,5 @@ test_feature_table.lookback = historical_data_test(:,9);
 
 rows_needed=test_feature_table(:,'lookback').lookback == 2;
 test_feature_table = test_feature_table(rows_needed,1:(end-1));
+
+clear all_teams_historical_test catTeams historical_data_test rows_needed teams;

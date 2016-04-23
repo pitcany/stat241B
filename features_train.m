@@ -35,3 +35,5 @@ train_feature_table.lookback = historical_data_train(:,9);
 
 rows_needed=train_feature_table(:,'lookback').lookback == 2;
 train_feature_table = train_feature_table(rows_needed,1:(end-1));
+
+clear all_teams_historical_train catTeams historical_data_train rows_needed teams;
