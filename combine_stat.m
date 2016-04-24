@@ -1,11 +1,22 @@
-function [historic_stat] = combine_stat(team,data,n,weights)
+function [historic_stat] = combine_stat(team,data,varargin)
 %for a given team, gives us aggregate totals for prior n games
 %split by if team was at home or away
 
-SetDefaultValue(1, 'team', 'Inter');
-SetDefaultValue(2, 'data', 'train');
-SetDefaultValue(3, 'n', 5);
-SetDefaultValue(4, 'weights', ones(1,n));
+p = inputParser;
+
+addRequired(p,'team',@(x) ischar(x) || iscellstr(x));
+addRequired(p,'data',@istable);
+addOptional(p,'n',5,@isnumeric);
+addOptional(p,'weights',[],@isnumeric);
+
+parse(p,team,data,varargin{:});
+n = p.Results.n;
+
+if (isempty(p.Results.weights))
+    weights = ones(1,n);
+else
+    weights = p.Results.weights;
+end
 
 is_team_playing = cellfun(@(x) strcmp(x,team),[data.AwayTeam data.HomeTeam]);
 Team_At_Away = is_team_playing(:,1);
