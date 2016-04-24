@@ -1,6 +1,25 @@
+function [test_feature_table] = features_test(test,varargin)
+%feature selection for training data. test data will be similar except
+%replace train with test everywhere
+
+p=inputParser;
+addRequired(p,'train',@istable);
+addOptional(p,'n',5,@isnumeric);
+addOptional(p,'weights',[],@isnumeric);
+
+parse(p,test,varargin{:});
+n = p.Results.n;
+
+if (isempty(p.Results.weights))
+    weights = ones(1,n);
+else
+    weights = p.Results.weights;
+end
+
 teams={'Ascoli','Atalanta','Bari','Bologna','Brescia','Cagliari','Catania','Cesena','Chievo','Empoli','Fiorentina','Genoa','Inter','Juventus','Lazio','Lecce','Livorno','Messina','Milan','Napoli','Novara','Palermo','Parma','Pescara','Reggina','Roma','Sampdoria','Sassuolo','Siena','Torino','Udinese','Verona'};
-all_teams_historical_test=arrayfun(@(x) combine_stat(x,test,7,...
-    exp([1 2 3 4 5 6 7])/sum(exp([1 2 3 4 5 6 7]))), teams, 'UniformOutput', false);
+%weights = ones(1,7);
+%weights1=exp([1 2 3 4 5 6 7])/sum(exp([1 2 3 4 5 6 7]));
+all_teams_historical_test=arrayfun(@(x) combine_stat(x,test,n,weights), teams, 'UniformOutput', false);
 
 catTeams = cat(3,all_teams_historical_test{:});
 historical_data_test=sum(catTeams,3);
