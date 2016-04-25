@@ -32,8 +32,8 @@ goals_TeamAtHome = data(:,'FTHG').FTHG .* Team_At_Home;
 goals_TeamAtAway = data(:,'FTAG').FTAG .* Team_At_Away;
 goals_by_team = goals_TeamAtHome + goals_TeamAtAway;
 
-shots_TeamAtHome = data(:,'FTHG').FTHG .* Team_At_Home;
-shots_TeamAtAway = data(:,'FTAG').FTAG .* Team_At_Away;
+shots_TeamAtHome = data(:,'HST').HST .* Team_At_Home;
+shots_TeamAtAway = data(:,'AST').AST .* Team_At_Away;
 shots_by_team = shots_TeamAtHome + shots_TeamAtAway;
 
 corners_TeamAtHome = data(:,'HC').HC .* Team_At_Home;

@@ -1,10 +1,15 @@
-function [f1Scores,accuracy] = evaluate_performance(classifier,test_data)
+function [confmat,accuracy] = evaluate_performance(classifier,test_data,num_classes)
 
-actual=test_data(:,'HomeWins').HomeWins;
+if (num_classes == 3)
+    actual=test_data(:,'FTR').FTR;
+elseif (num_classes == 2)
+    actual=test_data(:,'HomeWins').HomeWins;
+end
+
 predicted=classifier.predictFcn(test_data);
 %tells us the f1-score and the overall performance of our classifier
 confmat=confusionmat(actual,predicted);
-correct=confmat(1,1)+confmat(2,2);
+correct=sum(diag(confmat));
 total=sum(confmat(:));
 accuracy=correct/total;
 
