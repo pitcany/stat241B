@@ -145,11 +145,11 @@ In other words, assuming we use the past $n$ games for match history, the two fo
 
 If the game was played $i$ matches earlier, then
 \begin{itemize}
-\item $$Form_{unweighted} = \frac{1}{n} \sum_i x_i$$
-\item $$Form_{weighted} = \frac{1}{n} \sum_i x_i e^{-i}$$
+\item $$\tau(\{ x_1,\ldots,x_n\}) = Form_{unweighted} = \frac{1}{n} \sum_i x_i$$
+\item $$\tau'(\{ x_1,\ldots,x_n\}) = Form_{weighted} = \frac{1}{n} \sum_i x_i e^{-i}$$
 \end{itemize}
 
-Similarly, weighted and unweighted averages are applied to the statistics of corners, goals, and shots on target taken by the home and away teams to come up with our new features.
+Similarly, weighted and unweighted averages $\tau$ and $\tau'$ are applied to the statistics of corners, goals, and shots on target taken by the home and away teams to come up with our new features.
 
 To encapsulate the home advantage, we subtract Away values from the corresponding Home values when calculating our features.
 
@@ -165,19 +165,37 @@ To encapsulate the home advantage, we subtract Away values from the correspondin
 \item Betting odds for away team winning
 \end{itemize}
 
-The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the ?form? of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. 
-I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well.
+The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. 
+
+I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well.
 
 \subsection{Models}
 
-Support vector machines and Adaboost were used to train classifiers using $5$-fold cross validation. 
+Support vector machines and Adaboost were used to train classifiers using $5$-fold cross validation.
+
+\subsubsection{Support Vector Machines}
+
+Past papers suggested that SVMs were the best method for game prediction. Thus I trained SVMs using the following kernels:
+\begin{itemize}
+\item Linear
+\item Quadratic
+\item Cubic
+\item Gaussian (radial-basis function).
+\end{itemize}
+
+Since I was dealing with a multi-classification problem (three categories were home team wins, away team wins, or a draw), I tried both the one-vs-all and one-vs-one approach.
+
+\subsubsection{Adaboost}
+
+The idea behind Adaboost is to aggregate weak learners through iterations on the training data to create a strong classifier. Intuitively, this sounded promising for game data where one can use decision stumps corresponding to features such as the average of goals scored in the past few games. I trained Adaboost using $30$ decision trees of $20$ maximum splits.
 
 \section{Results}
 
-We kept the classifiers that performed the best on the training datasets and ran them on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days. We create a feature dataset for the test set and running our SVM on this data, we were able to get  about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
+We kept the classifiers that performed the best on the training datasets and ran them on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days.  We create a feature dataset for the test set and running our SVM on this data, we were able to get about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
 
 In the binary classification setting, RBF-SVM and logistic regression both performed very well with accuracy of 67\% and 71\% respectively. Tables recording the accuracies may be seen on the left hand side. The top table shows multiclassification accuracy whereas the bottom one shows results for binary classification.
-Of particular interest was that the SVM setting did not predict any draws at all. This may have been because our SVM relied on a one-vs-one method for multiclass method.
+
+Of particular interest was that the SVM setting did not predict any draws at all.
 
 \section{Conclusion}
 
