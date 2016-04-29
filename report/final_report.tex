@@ -1,0 +1,191 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Example: Project Report
+%
+% Source: http://www.howtotex.com
+%
+% Feel free to distribute this example, but please keep the referral
+% to howtotex.com
+% Date: March 2011 
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Edit the title below to update the display in My Documents
+%\title{Project Report}
+%
+%%% Preamble
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{fourier}
+
+\usepackage[english]{babel}															% English language/hyphenation
+\usepackage[protrusion=true,expansion=true]{microtype}	
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage[pdftex]{graphicx}	
+\usepackage{url}
+
+
+%%% Custom sectioning
+\usepackage{sectsty}
+\allsectionsfont{\centering \normalfont\scshape}
+
+
+%%% Custom headers/footers (fancyhdr package)
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}											% No page header
+\fancyfoot[L]{}											% Empty 
+\fancyfoot[C]{}											% Empty
+\fancyfoot[R]{\thepage}									% Pagenumbering
+\renewcommand{\headrulewidth}{0pt}			% Remove header underlines
+\renewcommand{\footrulewidth}{0pt}				% Remove footer underlines
+\setlength{\headheight}{13.6pt}
+
+
+%%% Equation and float numbering
+\numberwithin{equation}{section}		% Equationnumbering: section.eq#
+\numberwithin{figure}{section}			% Figurenumbering: section.fig#
+\numberwithin{table}{section}				% Tablenumbering: section.tab#
+
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 	% Horizontal rule
+
+\title{
+		%\vspace{-1in} 	
+		\usefont{OT1}{bch}{b}{n}
+		\normalfont \normalsize \textsc{UC Berkeley} \\ [25pt]
+		\horrule{0.5pt} \\[0.4cm]
+		\huge Soccer Match Prediction in the Serie A \\
+		\horrule{2pt} \\[0.5cm]
+}
+\author{
+		\normalfont 								\normalsize
+        Yannik Pitcan\\[-3pt]		\normalsize
+        \today
+}
+\date{}
+
+
+%%% Begin document
+\begin{document}
+\maketitle
+
+\section{Abstract}
+I focus on applying statistical learning methodology to predict the results of soccer games in the Italian Serie A. Using past historical data from several years, features are engineered to capture the performance of a team. Support vector machines, logistic regression, and Adaboost are the best performing techniques with regard to predicting the results of future matches. The emphasis is on analyzing the tradeoffs between these methods' performances on our dataset with respect to precision/recall and error rates.
+
+\section{Introduction}
+Sports betting is a major industry in the United States and worldwide. With the advent of statistical learning methodology over the past few decades, inroads have been made into sports prediction in order to determine the outcomes of matches. However, most of this analysis has been done for baseball, basketball, and other games and sports where the game is less fluid. As an avid soccer fan, I decided to attempt to predict soccer match outcomes in the Serie A. The choice of the Italian Serie A was due to a few reasons. I believe the Serie A exhibits a parity among the teams that doesn't exist in other leagues. Also the tactical style of play in this league makes one think that past outcomes can influence the result of future games.
+
+\subsection{Related Literature}
+Much of the work on this topic is done by bookmakers. Furthermore, they have access to private data which gives them a leg up on competitors. At Stanford however, a few students (Ulmer and Fernandez, Timmaraju) analyzed classifiers such as SVM, random forests, and Hidden Markov Models for the English Premier League. My belief was that one could improve the feature selection methods used to get more accurate predictions on wins. To my knowledge, ranks of teams were not incorporated in the prior methods.
+
+Another paper that was of relevance was work by Oyvind and Rue in their paper "Predicting and Retrospective Analysis of Soccer Matches in a League." Oyvind and Rue use a Markov Chain Monte Carlo (MCMC) approach to predicting the outcomes of matches. Although my work does not use a Bayesian dynamic linear model, my ideas for feature selection were influenced by both Oyvind and Rue and Ulmer and Fernandez. In particular, this influenced my decision to investigate a time dependent model of exponential weights when creating form and performance metrics for teams.
+
+\subsection{Dataset}
+The data used consisted of the results from the $2007$ season to the current $2016$ season. Seasons $2007$ to $2014$ were used for the training set and the $2015$ and $2016$ (ongoing) seasons were used for the test set. Our training dataset consisted of $3420$ games while our test dataset had $320$ games. For every game, the following data was recorded:
+
+\begin{itemize}
+\item Home team
+\item Away team
+\item Result (Win, Loss, or Draw)
+\item Goals scored by Home
+\item Goals scored by Away
+\item Shots taken by Home
+\item Shots taken by Away
+\item Corners taken by Home
+\item Corners taken by Away
+\item Home Win Odds
+\item Draw Odds
+\item Away Win Odds
+\end{itemize}
+
+Most of this data taken from http://www.football-data.co.uk/ and parsed via shell scripting. The betting odds were extracted from the Bet365 website.
+
+\section{Methodology}
+
+The main difference between my work and others is with regard to feature selection. I utilize odds ratios from betting agencies along with match statistics for prediction. Also, I apply time dependent weights in order to determine my features. The rest of this section covers more details about the specifics behind feature selection along with the challenges faced along the way.
+
+\subsubsection{Challenges}
+
+The majority of the difficulty came from the relatively inaccessible data for soccer as opposed to basketball and baseball which have troves of information. In order to attain data that includes player statistics per game, I would have to purchase this through Opta. Thus, I had limited data from which I could use for predictions. Most professional companies incorporate individual player statistics in their analyses, and also they have information about injuries as well.
+
+Another obstacle I ran into was that a game like soccer has so many upsets that defy expectations as opposed to baseball or basketball. Many times a team with more skill loses to a weaker team due to luck. This is because there are so few scoring opportunities in a 90 minute match, especially at the upper echelons of the sport. For example, it is rare to have a repeat champion in the Serie A, with the exception of Juventus in the past few seasons.
+
+\subsubsection{Feature Selection}
+
+This was by far the most intensive task in this project because not only were new features necessary but I had to determine which features are relevant. In order to understand what features to engineer, one must ask the following:
+
+\begin{itemize}
+\item How can one capture the 'form' of a team?
+\item Is the team playing home or away?
+\item Has the team been scoring goals often? What is the overall performance outside of match results?
+\end{itemize}
+
+The concept of form is highly discussed in related literature. I experimented with two ways of calculating this.
+
+One of my form calculations used time-dependent weights while the other one did not. As I did literature review, I noticed that time-dependency was not factored in when determining a 'form' feature. Thus I decided to give exponential weights to games played in the past.
+
+For both calculations, one maps $\{win, draw, loss\} \to \{1, 0, -1\}$ in order to have a numeric value representing the result trend of a team as of late. $$x_i = \begin{cases} 1&, win \\ 0&, draw \\ -1&, loss \end{cases}.$$
+
+In other words, assuming we use the past $n$ games for match history, the two form features are calculated as follows:
+
+If the game was played $i$ matches earlier, then
+\begin{itemize}
+\item $$Form_{unweighted} = \frac{1}{n} \sum_i x_i$$
+\item $$Form_{weighted} = \frac{1}{n} \sum_i x_i e^{-i}$$
+\end{itemize}
+
+Similarly, weighted and unweighted averages are applied to the statistics of corners, goals, and shots on target taken by the home and away teams to come up with our new features.
+
+To encapsulate the home advantage, we subtract Away values from the corresponding Home values when calculating our features.
+
+\begin{itemize}
+\item Home team
+\item Away team
+\item $\tau$(results in past n matches of home team) - $\tau$(results in past n matches of away team)
+\item $\tau$(shots taken in past n matches of home team) - $\tau$(shots taken in past n matches of away team)
+\item $\tau$(corners in past n matches of home team) - $\tau$(corners in past n matches of away team)
+\item $\tau$(goals scored in past n matches of home team) - $\tau$(goals scored in past n matches of away team)
+\item Betting odds for home team winning
+\item Betting odds for draw
+\item Betting odds for away team winning
+\end{itemize}
+
+\section{Lists}
+
+\subsection{Example for list (3*itemize)}
+\begin{itemize}
+	\item First item in a list 
+		\begin{itemize}
+		\item First item in a list 
+			\begin{itemize}
+			\item First item in a list 
+			\item Second item in a list 
+			\end{itemize}
+		\item Second item in a list 
+		\end{itemize}
+	\item Second item in a list 
+\end{itemize}
+
+\subsection{Example for list (enumerate)}
+\begin{enumerate}
+	\item First item in a list 
+	\item Second item in a list 
+	\item Third item in a list
+\end{enumerate}
+%%% End document
+\end{document}
