@@ -91,7 +91,7 @@ I focus on applying statistical learning methodology to predict the results of s
 Sports betting is a major industry in the United States and worldwide. With the advent of statistical learning methodology over the past few decades, inroads have been made into sports prediction in order to determine the outcomes of matches. However, most of this analysis has been done for baseball, basketball, and other games and sports where the game is less fluid. As an avid soccer fan, I decided to attempt to predict soccer match outcomes in the Serie A. The choice of the Italian Serie A was due to a few reasons. I believe the Serie A exhibits a parity among the teams that doesn't exist in other leagues. Also the tactical style of play in this league makes one think that past outcomes can influence the result of future games.
 
 \subsection{Related Literature}
-Much of the work on this topic is done by bookmakers. Furthermore, they have access to private data which gives them a leg up on competitors. At Stanford however, a few students (Ulmer and Fernandez, Timmaraju) analyzed classifiers such as SVM, random forests, and Hidden Markov Models for the English Premier League. My belief was that one could improve the feature selection methods used to get more accurate predictions on wins. To my knowledge, ranks of teams were not incorporated in the prior methods.
+Much of the work on this topic is done by bookmakers. Furthermore, they have access to private data which gives them a leg up on competitors. At Stanford however, a few students (Ulmer and Fernandez, Timmaraju) analyzed classifiers such as SVM, random forests, and Hidden Markov Models for the English Premier League. My belief was that one could improve the feature selection methods used to get more accurate predictions on wins. In particular, ranks of teams were not always incorporated in the prior methods.
 
 Another paper that was of relevance was work by Oyvind and Rue in their paper "Predicting and Retrospective Analysis of Soccer Matches in a League." Oyvind and Rue use a Markov Chain Monte Carlo (MCMC) approach to predicting the outcomes of matches. Although my work does not use a Bayesian dynamic linear model, my ideas for feature selection were influenced by both Oyvind and Rue and Ulmer and Fernandez. In particular, this influenced my decision to investigate a time dependent model of exponential weights when creating form and performance metrics for teams.
 
@@ -156,36 +156,30 @@ To encapsulate the home advantage, we subtract Away values from the correspondin
 \begin{itemize}
 \item Home team
 \item Away team
-\item $\tau$(results in past n matches of home team) - $\tau$(results in past n matches of away team)
-\item $\tau$(shots taken in past n matches of home team) - $\tau$(shots taken in past n matches of away team)
-\item $\tau$(corners in past n matches of home team) - $\tau$(corners in past n matches of away team)
-\item $\tau$(goals scored in past n matches of home team) - $\tau$(goals scored in past n matches of away team)
+\item $\tau$(results in past $n$ matches of home team) - $\tau$(results in past $n$ matches of away team)
+\item $\tau$(shots taken in past $n$ matches of home team) - $\tau$(shots taken in past $n$ matches of away team)
+\item $\tau$(corners in past $n$ matches of home team) - $\tau$(corners in past $n$ matches of away team)
+\item $\tau$(goals scored in past $n$ matches of home team) - $\tau$(goals scored in past $n$ matches of away team)
 \item Betting odds for home team winning
 \item Betting odds for draw
 \item Betting odds for away team winning
 \end{itemize}
 
-\section{Lists}
+The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the ?form? of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. 
+I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well.
 
-\subsection{Example for list (3*itemize)}
-\begin{itemize}
-	\item First item in a list 
-		\begin{itemize}
-		\item First item in a list 
-			\begin{itemize}
-			\item First item in a list 
-			\item Second item in a list 
-			\end{itemize}
-		\item Second item in a list 
-		\end{itemize}
-	\item Second item in a list 
-\end{itemize}
+\subsection{Models}
 
-\subsection{Example for list (enumerate)}
-\begin{enumerate}
-	\item First item in a list 
-	\item Second item in a list 
-	\item Third item in a list
-\end{enumerate}
+Support vector machines and Adaboost were used to train classifiers using $5$-fold cross validation. 
+
+\section{Results}
+
+We kept the classifiers that performed the best on the training datasets and ran them on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days. We create a feature dataset for the test set and running our SVM on this data, we were able to get  about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
+
+In the binary classification setting, RBF-SVM and logistic regression both performed very well with accuracy of 67\% and 71\% respectively. Tables recording the accuracies may be seen on the left hand side. The top table shows multiclassification accuracy whereas the bottom one shows results for binary classification.
+Of particular interest was that the SVM setting did not predict any draws at all. This may have been because our SVM relied on a one-vs-one method for multiclass method.
+
+\section{Conclusion}
+
 %%% End document
 \end{document}
