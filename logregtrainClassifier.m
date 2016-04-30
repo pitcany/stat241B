@@ -1,4 +1,4 @@
-function [trainedClassifier, validationAccuracy] = logreg(trainingData)
+function [trainedClassifier, validationAccuracy] = logregtrainClassifier(trainingData)
 % trainClassifier(trainingData)
 %  returns a trained classifier and its accuracy.
 %  This code recreates the classification model trained in
