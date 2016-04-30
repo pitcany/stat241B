@@ -36,7 +36,7 @@
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
 \usepackage[pdftex]{graphicx}	
 \usepackage{url}
-
+\usepackage{multirow}
 
 %%% Custom sectioning
 \usepackage{sectsty}
@@ -167,11 +167,11 @@ To encapsulate the home advantage, we subtract Away values from the correspondin
 
 The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. 
 
-I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well.
+I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well. In the end, new feature tables were created for both the training and test data.
 
 \subsection{Models}
 
-Support vector machines and Adaboost were used to train classifiers using $5$-fold cross validation.
+Support vector machines, Adaboost, and logistic regression were used to train classifiers using $5$-fold cross validation. The implementation of this was done in Matlab using the Classification Learner package.
 
 \subsubsection{Support Vector Machines}
 
@@ -187,9 +187,30 @@ Since I was dealing with a multi-classification problem (three categories were h
 
 \subsubsection{Adaboost}
 
-The idea behind Adaboost is to aggregate weak learners through iterations on the training data to create a strong classifier. Intuitively, this sounded promising for game data where one can use decision stumps corresponding to features such as the average of goals scored in the past few games. I trained Adaboost using $30$ decision trees of $20$ maximum splits.
+The idea behind Adaboost is to aggregate weak learners through iterations on the training data to create a strong classifier. Intuitively, this sounded promising for game data where one can use decision stumps corresponding to features such as the average of goals scored in the past few games. I trained Adaboost classifiers using $30$ decision trees of $20$ maximum splits.
+
+\subsubsection{Logistic Regression}
+
+Along with SVMs and Adaboost, binary logistic regression was implemented as a baseline classifier. I create two features HomeWins and AwayWins that are $1$ if and only if the home team or the away team wins respectively and $0$ otherwise.
 
 \section{Results}
+
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Performance of Classifiers} \\
+ \hline
+Classifier & Accuracy & Precision & Recall\\
+ \hline
+ Linear SVM   & AF    &AFG&   004\\
+ Gaussian SVM &   AX  & ALA   &248\\
+ Adaboost &AL & ALB&  008\\
+ Algeria    &DZ & DZA&  012\\
+ American Samoa&   AS  & ASM&016\\
+ Andorra& AD  & AND   &020\\
+ Angola& AO  & AGO&024\\
+ \hline
+\end{tabular}
+
 
 We kept the classifiers that performed the best on the training datasets and ran them on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days.  We create a feature dataset for the test set and running our SVM on this data, we were able to get about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
 

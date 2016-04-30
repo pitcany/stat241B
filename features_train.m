@@ -45,6 +45,7 @@ train_feature_table.B365H = train(:,'B365H').B365H;
 train_feature_table.B365D = train(:,'B365D').B365D;
 train_feature_table.B365A = train(:,'B365A').B365A;
 train_feature_table.HomeWins = strcmp(train(:,'FTR').FTR,'H');
+train_feature_table.AwayWins = strcmp(train(:,'FTR').FTR,'A');
 train_feature_table.lookback = historical_data_train(:,9);
 
 %filter rows that don't have enough prior historical data aka lookback is 2

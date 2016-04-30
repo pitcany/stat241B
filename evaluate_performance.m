@@ -3,6 +3,8 @@ function [confmat,accuracy] = evaluate_performance(classifier,test_data,num_clas
 if (num_classes == 3)
     actual=test_data(:,'FTR').FTR;
 elseif (num_classes == 2)
+    actual=test_data(:,'AwayWins').AwayWins;
+elseif (num_classes == 1)
     actual=test_data(:,'HomeWins').HomeWins;
 end
 

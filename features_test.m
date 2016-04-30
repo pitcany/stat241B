@@ -46,6 +46,7 @@ test_feature_table.B365H = test(:,'B365H').B365H;
 test_feature_table.B365D = test(:,'B365D').B365D;
 test_feature_table.B365A = test(:,'B365A').B365A;
 test_feature_table.HomeWins = strcmp(test(:,'FTR').FTR,'H');
+test_feature_table.AwayWins = strcmp(test(:,'FTR').FTR,'A');
 test_feature_table.lookback = historical_data_test(:,9);
 
 %filter rows that don't have enough prior historical data aka lookback is 2
