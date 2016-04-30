@@ -37,6 +37,7 @@
 \usepackage[pdftex]{graphicx}	
 \usepackage{url}
 \usepackage{multirow}
+\usepackage{array}
 
 %%% Custom sectioning
 \usepackage{sectsty}
@@ -165,7 +166,9 @@ To encapsulate the home advantage, we subtract Away values from the correspondin
 \item Betting odds for away team winning
 \end{itemize}
 
-The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. For comparison purposes, $n=5$ was also used.
+The determination of $n$ was arbitrary. I used $n=5$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. For purposes of comparison, $n=7$ was also used.
+
+Another obstacle one faces when looking at the $n$ past matches is that there are games early in the season where there isn't enough history to calculate features. For those matches, I ignored them when creating the training feature set. This approach was also done in the past (Ulmer, Fernandez). 
 
 I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well. In the end, new feature tables were created for both the training and test data.
 
@@ -175,7 +178,7 @@ Support vector machines, Adaboost, and logistic regression were used to train cl
 
 \subsubsection{Support Vector Machines}
 
-Past papers suggested that SVMs were the best method for game prediction. Thus I trained SVMs using the following kernels:
+Past literature suggested that SVMs were the best method for out-of-the-box match prediction. Thus I trained SVMs using the following kernels:
 \begin{itemize}
 \item Linear
 \item Quadratic
@@ -193,41 +196,13 @@ The idea behind Adaboost is to aggregate weak learners through iterations on the
 
 Along with SVMs and Adaboost, binary logistic regression was implemented as a baseline classifier. I create two features HomeWins and AwayWins that are $1$ if and only if the home team or the away team wins respectively and $0$ otherwise.
 
-\section{Results}
+\section{Results and Discussion}
 
-%\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
-% \hline
-% \multicolumn{4}{|c|}{Performance of Classifiers for $n=7$} \\
-% \hline
-%Classifier & Accuracy & Precision & Recall\\
-% \hline
-% Linear SVM   & AF    &AFG&   004\\
-% Gaussian SVM &   AX  & ALA   &248\\
-% Adaboost &AL & ALB&  008\\
-% Algeria    &DZ & DZA&  012\\
-% American Samoa&   AS  & ASM&016\\
-% Andorra& AD  & AND   &020\\
-% Angola& AO  & AGO&024\\
-% \hline
-%\end{tabular}
+The accuracies in the tables are listed as percentages.
 
-%\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
-% \hline
-% \multicolumn{4}{|c|}{Performance of Classifiers for $n=5$} \\
-% \hline
-%Classifier & Accuracy & Precision & Recall\\
-% \hline
-% Linear SVM   & 50.9    &AFG&   004\\
-% Gaussian SVM &   51.4  & ALA   &248\\
-% Linear (one-vs-all) SVM & 47.2 & ALB&  008\\
-% Gaussian (one-vs-all) SVM    & 50.5 & DZA&  012\\
-% Adaboost & 52.3  & ASM&016\\
-% \hline
-%\end{tabular}
-
-\begin{tabular}{ |p{3cm}||p{3cm}|  }
+\begin{tabular}{ |p{5cm}||p{5cm}|  }
  \hline
- \multicolumn{2}{|c|}{Performance of Classifiers for $n=5$} \\
+ \multicolumn{2}{|c|}{Multi-class Classifiers for $n=5$} \\
  \hline
 Classifier & Accuracy \\
  \hline
@@ -239,9 +214,9 @@ Classifier & Accuracy \\
  \hline
 \end{tabular}
 
-\begin{tabular}{ |p{3cm}||p{3cm}|  }
+\begin{tabular}{ |p{5cm}||p{5cm}|  }
  \hline
- \multicolumn{2}{|c|}{Performance of Classifiers for $n=7$} \\
+ \multicolumn{2}{|c|}{Multi-class classifiers for $n=7$} \\
  \hline
 Classifier & Accuracy \\
  \hline
@@ -253,27 +228,25 @@ Classifier & Accuracy \\
  \hline
 \end{tabular}
 
-\begin{tabular}{ |p{3cm}||p{3cm}|  }
+\begin{tabular}{ |p{4cm}||p{4cm}|p{4cm}|  }
  \hline
- \multicolumn{2}{|c|}{Performance of Binary Classifiers for $n=5$} \\
+ \multicolumn{3}{|c|}{Binary Classifiers for $n=5$} \\
  \hline
-Classifier & Accuracy \\
+Classifier & Home Accuracy & Away Accuracy \\
  \hline
- Linear SVM   & 50.9 \\
- Gaussian SVM &   51.4 \\
- Linear (one-vs-all) SVM & 47.2 \\
- Gaussian (one-vs-all) SVM    & 50.5 \\
- Adaboost & 52.3 \\
+ Linear SVM   & 57.8 & 69.7 \\
+ Gaussian SVM &   67.0 & 72.9 \\
+ Adaboost & 72.9 & 68.4 \\
+ Logistic Regression & 69.7 & 45.9 \\
  \hline
 \end{tabular}
 
-We ran all of our classifiers on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days.  We create a feature dataset for the test set and running our SVM on this data, we were able to get about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
+I ran all of our classifiers on the test feature set. SVM with a linear kernel performed the best when looking at $7$ days for feature creation with an accuracy of $53\%$. Adaboost performed similarly with $51.5\%$ success. Overall, there was little difference between performance of SVM and Adaboost. However, the methods predicted better for SVM using a one-vs-one as opposed to a one-vs-all approach. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
 
-In the binary classification setting, RBF-SVM and logistic regression both performed very well with accuracy of 67\% and 71\% respectively. Tables recording the accuracies may be seen on the left hand side. The top table shows multiclassification accuracy whereas the bottom one shows results for binary classification.
+In the binary classification setting, Adaboost predicted wins at home well with about a $73\%$ accuracy while Gaussian SVM did well guessing away team wins also with $73\%$ accuracy. Of note is that our baseline, logistic regression, performed relatively badly when guessing when the away team won.
 
-Of particular interest was that the SVM setting did not predict any draws at all.
+Another note of interest is that draws were underpredicted with SVM. This had been noticed by others in the past as well (Timmaraju).
 
-\section{Conclusion}
 
 %%% End document
 \end{document}
