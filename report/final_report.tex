@@ -165,7 +165,7 @@ To encapsulate the home advantage, we subtract Away values from the correspondin
 \item Betting odds for away team winning
 \end{itemize}
 
-The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. 
+The determination of $n$ was arbitrary. I used $n=7$ because we thought that was the ideal number of matches representative of the form of a team. The idea behind this attribute is that we can explain using past results how confident the team is currently. For comparison purposes, $n=5$ was also used.
 
 I believed the inclusion of betting odds would be an indicator of the ranks of the home and away teams so I used these as features as well. In the end, new feature tables were created for both the training and test data.
 
@@ -195,24 +195,79 @@ Along with SVMs and Adaboost, binary logistic regression was implemented as a ba
 
 \section{Results}
 
-\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+%\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+% \hline
+% \multicolumn{4}{|c|}{Performance of Classifiers for $n=7$} \\
+% \hline
+%Classifier & Accuracy & Precision & Recall\\
+% \hline
+% Linear SVM   & AF    &AFG&   004\\
+% Gaussian SVM &   AX  & ALA   &248\\
+% Adaboost &AL & ALB&  008\\
+% Algeria    &DZ & DZA&  012\\
+% American Samoa&   AS  & ASM&016\\
+% Andorra& AD  & AND   &020\\
+% Angola& AO  & AGO&024\\
+% \hline
+%\end{tabular}
+
+%\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+% \hline
+% \multicolumn{4}{|c|}{Performance of Classifiers for $n=5$} \\
+% \hline
+%Classifier & Accuracy & Precision & Recall\\
+% \hline
+% Linear SVM   & 50.9    &AFG&   004\\
+% Gaussian SVM &   51.4  & ALA   &248\\
+% Linear (one-vs-all) SVM & 47.2 & ALB&  008\\
+% Gaussian (one-vs-all) SVM    & 50.5 & DZA&  012\\
+% Adaboost & 52.3  & ASM&016\\
+% \hline
+%\end{tabular}
+
+\begin{tabular}{ |p{3cm}||p{3cm}|  }
  \hline
- \multicolumn{4}{|c|}{Performance of Classifiers} \\
+ \multicolumn{2}{|c|}{Performance of Classifiers for $n=5$} \\
  \hline
-Classifier & Accuracy & Precision & Recall\\
+Classifier & Accuracy \\
  \hline
- Linear SVM   & AF    &AFG&   004\\
- Gaussian SVM &   AX  & ALA   &248\\
- Adaboost &AL & ALB&  008\\
- Algeria    &DZ & DZA&  012\\
- American Samoa&   AS  & ASM&016\\
- Andorra& AD  & AND   &020\\
- Angola& AO  & AGO&024\\
+ Linear SVM   & 50.9 \\
+ Gaussian SVM &   51.4 \\
+ Linear (one-vs-all) SVM & 47.2 \\
+ Gaussian (one-vs-all) SVM    & 50.5 \\
+ Adaboost & 52.3 \\
  \hline
 \end{tabular}
 
+\begin{tabular}{ |p{3cm}||p{3cm}|  }
+ \hline
+ \multicolumn{2}{|c|}{Performance of Classifiers for $n=7$} \\
+ \hline
+Classifier & Accuracy \\
+ \hline
+ Linear SVM   & 53.0 \\
+ Gaussian SVM &   51.0 \\
+ Linear (one-vs-all) SVM & 50.0 \\
+ Gaussian (one-vs-all) SVM    & 49.5 \\
+ Adaboost & 51.5 \\
+ \hline
+\end{tabular}
 
-We kept the classifiers that performed the best on the training datasets and ran them on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days.  We create a feature dataset for the test set and running our SVM on this data, we were able to get about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
+\begin{tabular}{ |p{3cm}||p{3cm}|  }
+ \hline
+ \multicolumn{2}{|c|}{Performance of Binary Classifiers for $n=5$} \\
+ \hline
+Classifier & Accuracy \\
+ \hline
+ Linear SVM   & 50.9 \\
+ Gaussian SVM &   51.4 \\
+ Linear (one-vs-all) SVM & 47.2 \\
+ Gaussian (one-vs-all) SVM    & 50.5 \\
+ Adaboost & 52.3 \\
+ \hline
+\end{tabular}
+
+We ran all of our classifiers on the test feature set. Our best performing classifiers were Adaboost and RBF-SVM using feature data created by weighted match observations for the past 7 days.  We create a feature dataset for the test set and running our SVM on this data, we were able to get about 44\% accuracy predicting whether a result would be a win, loss, or draw. For Adaboost, we were predicting with 51\% success. Considering that we would expect 33\% success with randomly guessing, these results were fairly promising.
 
 In the binary classification setting, RBF-SVM and logistic regression both performed very well with accuracy of 67\% and 71\% respectively. Tables recording the accuracies may be seen on the left hand side. The top table shows multiclassification accuracy whereas the bottom one shows results for binary classification.
 
