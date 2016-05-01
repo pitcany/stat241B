@@ -37,7 +37,7 @@
 \usepackage[pdftex]{graphicx}	
 \usepackage{url}
 \usepackage{multirow}
-\usepackage{array}
+\usepackage{array,diagbox}
 
 %%% Custom sectioning
 \usepackage{sectsty}
@@ -245,7 +245,55 @@ I ran all of our classifiers on the test feature set. SVM with a linear kernel p
 
 In the binary classification setting, Adaboost predicted wins at home well with about a $73\%$ accuracy while Gaussian SVM did well guessing away team wins also with $73\%$ accuracy. Of note is that our baseline, logistic regression, performed relatively badly when guessing when the away team won.
 
-Another note of interest is that draws were underpredicted with SVM. This had been noticed by others in the past as well (Timmaraju).
+Another note of interest is that away wins were underpredicted by both Adaboost and SVM. The linear SVM and Adaboost predicted only $2$ and $3$ out of $60$ away wins correctly respectively. Both performed well when predicting wins at home however.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l||*{3}{c|}}\hline
+\backslashbox{Actual}{Predicted}
+&\makebox[3em]{H}&\makebox[3em]{D}&\makebox[3em]{A}\\\hline\hline
+H & 80 & 9 & 3\\\hline
+D & 37 & 29 & 0\\\hline
+A & 46 & 12 & 2\\\hline
+\end{tabular}
+\caption{Confusion matrix for Linear SVM}
+
+\begin{tabular}{|l||*{3}{c|}}\hline
+\backslashbox{Actual}{Predicted}
+&\makebox[3em]{H}&\makebox[3em]{D}&\makebox[3em]{A}\\\hline\hline
+H & 77 & 11 & 4\\\hline
+D & 31 & 34 & 1\\\hline
+A & 32 & 25 & 3\\\hline
+\end{tabular}
+\caption{Confusion matrix for Linear SVM}
+\end{table}
+
+Leading pundits and the betting markets predict with accuracy around the 50\% ballpark as well. Expert pundits in the BBC had a 52.6\% accuracy whereas the betting markets averaged 55.3\% in 2013-2014. Albeit they were betting on the English Premier League, but assuming their methods generalized to the Italian League, my predictions are comparable!
+
+The betting odds did not impact predictions very much however as our results weren't significantly better than those in the past (Ulmer, Fernandez, Timmaraju) who didn't factor in these metrics. A future direction for this project would be to take into account the ranks of teams that are playing using a rating such as the ELO score. Another route would be to take data for players from a virtual source. The video game FIFA gives ratings for their players and teams every year. This may lead to improved prediction accuracy with more features to work with.
+
+
+\begin{thebibliography}{9}
+\bibitem{latexcompanion} 
+Michel Goossens, Frank Mittelbach, and Alexander Samarin. 
+\textit{The \LaTeX\ Companion}. 
+Addison-Wesley, Reading, Massachusetts, 1993.
+ 
+\bibitem{rue} 
+Rue, Havard, and Oyvind Salvesen, "Prediction and retrospective analysis of soccer matches in a league" Journal of the Royal Statistical Society: Series D (The Statistician) 49.3 (2000): 399-418.
+ 
+\bibitem{gameon2} 
+B. Ulmer \& M. Fernandez,
+\\\texttt{Predicting Soccer Match Results in the English Premier League}, 2014
+
+\bibitem{gameon} 
+A. S. Timmaraju, A. Palnitkar, \& V. Khanna,
+\\\texttt{Game ON! Predicting English Premier League Match Outcomes}, 2013
+\end{thebibliography}
+
+
+
+
 
 
 %%% End document
